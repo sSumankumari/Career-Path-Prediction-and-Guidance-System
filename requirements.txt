@@ -1,0 +1,6 @@
+pip==24.2
+streamlit
+pandas
+numpy
+tensorflow
+scikit-learn
