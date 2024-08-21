@@ -3,11 +3,37 @@ from tensorflow.keras.models import load_model
 import numpy as np
 import os
 
-# Define the model directory and load the model
+# Load the model
 model_dir = 'model'
 model_path = os.path.join(model_dir, 'ann_model.h5')
 loaded_model = load_model(model_path)
 
+# Inject custom CSS for better styling
+st.markdown("""
+    <style>
+    .sidebar .sidebar-content {
+        background-color: #f8f9fa;
+    }
+    .sidebar .sidebar-content h4 {
+        color: #007bff;
+    }
+    .main .block-container {
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    .stButton>button {
+        background-color: #007bff;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 10px;
+    }
+    .stButton>button:hover {
+        background-color: #0056b3;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # Define functions for detailed guidance based on the predicted job role
 def provide_guidance(job_role):
@@ -32,10 +58,14 @@ def provide_guidance(job_role):
 # Sidebar with detailed instructions
 st.sidebar.header("App Instructions")
 st.sidebar.write("""
-### Follow the steps below to use this Career Path Prediction and Guidance System:
+#### Follow the steps below to use this Career Path Prediction and Guidance System:
 
 1. **Enter Your Ratings and Scores:**
    - Provide your ratings for coding skills, self-learning capability, reading and writing skills, and memory capability.
+   - For "Reading and Writing Skills" and "Memory Capability Score," use the following scale:
+     - **Poor**: 0
+     - **Medium**: 1
+     - **Excellent**: 2
 
 2. **Select Your Certifications:**
    - Choose all relevant certifications you have completed from the list provided.
@@ -60,34 +90,40 @@ st.sidebar.write("""
 """)
 
 # Collecting user inputs
-st.title("Career Path Prediction and Guidance System")
+st.title("🎯 Career Path Prediction and Guidance System")
 
+st.markdown("#### Rate Your Skills and Capabilities")
 coding_skills_rating = st.slider("Coding Skills Rating", 1, 10, 5)
-self_learning_capability = st.radio("Self-Learning Capability", [0, 1], index=1)
-reading_and_writing_skills = st.selectbox("Reading and Writing Skills", [0, 1, 2])
-memory_capability_score = st.selectbox("Memory Capability Score", [0, 1, 2])
+self_learning_capability = st.radio("Self-Learning Capability", [0, 1], index=1, help="Select your self-learning capability.")
+reading_and_writing_skills = st.selectbox("Reading and Writing Skills", [0, 1, 2], help="Rate your reading and writing skills.")
+memory_capability_score = st.selectbox("Memory Capability Score", [0, 1, 2], help="Rate your memory capability.")
 
+st.markdown("#### Select Your Certifications")
 certifications = st.multiselect("Certifications",
                                 ['App Development', 'Distro Making', 'Full Stack', 'Hadoop',
                                  'Information Security', 'Machine Learning', 'Python',
                                  'R Programming', 'Shell Programming'])
 
+st.markdown("#### Select the Workshops Attended")
 workshops = st.multiselect("Workshops Attended",
                            ['Cloud Computing', 'Data Science', 'Database Security',
                             'Game Development', 'Hacking', 'System Designing',
                             'Testing', 'Web Technologies'])
 
+st.markdown("#### Choose Your Interested Subjects")
 interested_subjects = st.multiselect("Interested Subjects",
                                      ['Computer Architecture', 'IOT', 'Management',
                                       'Software Engineering', 'Cloud Computing',
                                       'Data Engineering', 'Hacking', 'Networks',
                                       'Parallel Computing', 'Programming'])
 
+st.markdown("#### Select Your Preferred Career Area")
 interested_career_area = st.multiselect("Interested Career Area",
                                         ['Business Process Analyst', 'Cloud Computing',
                                          'Developer', 'Security', 'System Developer',
                                          'Testing'])
 
+st.markdown("#### Choose the Preferred Type of Company")
 type_of_company = st.selectbox("Preferred Type of Company",
                                ['BPA', 'Cloud Services', 'Finance', 'Product Based',
                                 'SAaS Services', 'Sales and Marketing', 'Service Based',
@@ -117,20 +153,13 @@ user_input = np.array([[coding_skills_rating, self_learning_capability, reading_
                        subjects_vector + career_area_vector + company_vector])
 
 # Predict the career path
-if st.button("Predict Career Path"):
+if st.button("🔍 Predict Career Path"):
     prediction = loaded_model.predict(user_input)
-
-    # Get the index of the highest predicted probability
     predicted_index = np.argmax(prediction)
-
-    # Map the index to the corresponding job role
     job_roles = ['Applications Developer', 'CRM Technical Developer', 'Database Developer',
                  'Mobile Applications Developer', 'Network Security Engineer', 'Software Developer',
                  'Software Engineer', 'Software Quality Assurance (QA) / Testing',
                  'Systems Security Administrator', 'Technical Support', 'UX Designer', 'Web Developer']
-
     predicted_job_role = job_roles[predicted_index]
-
-    # Display the predicted career path and guidance
-    st.write(f"**Predicted Career Path:** {predicted_job_role}")
-    st.write(f"**Guidance:** {provide_guidance(predicted_job_role)}")
+    st.success(f"**Predicted Career Path:** {predicted_job_role}")
+    st.info(f"**Guidance:** {provide_guidance(predicted_job_role)}")
