@@ -4,6 +4,15 @@ import numpy as np
 import os
 import random
 
+# Set the page configuration, including title and layout
+st.set_page_config(
+    page_title="Career Path Prediction and Guidance System",
+    page_icon="🎯",
+    layout="centered",
+    initial_sidebar_state="expanded"
+)
+
+
 # Load the model
 model_dir = 'model'
 model_path = os.path.join(model_dir, 'ann_model.h5')
