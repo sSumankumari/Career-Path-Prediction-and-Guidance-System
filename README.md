@@ -1,6 +1,6 @@
 # Career Path Prediction and Guidance System
 
-This project is a **Career Path Prediction and Guidance System** built using a Streamlit web application. The system provides users with personalized career path predictions based on their skills, certifications, workshops attended, and career interests.
+This project is developed as part of an internship at Cloud Counselage Pvt. Ltd. where I worked as a Machine Learning Intern. The aim of the project is to create a Career Path Prediction and Guidance System using a Streamlit web application. This application provides users with personalized career path predictions based on various inputs related to their skills, certifications, workshops attended, and career interests.
 
 ## Features
 
