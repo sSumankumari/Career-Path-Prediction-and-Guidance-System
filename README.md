@@ -20,7 +20,7 @@ This project is a **Career Path Prediction and Guidance System** built using a S
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/career-path-prediction.git
+    git clone https://github.com/sSumankumari/Career-Path-Prediction-and-Guidance-System
     cd career-path-prediction
     ```
 
