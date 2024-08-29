@@ -36,16 +36,15 @@ This project is developed as part of an internship at Cloud Counselage Pvt. Ltd.
 
 ## How It Works
 
-1. **Enter Your Ratings and Scores:** Provide ratings for your coding skills, self-learning capability, reading and writing skills, and memory capability.
-2. **Select Your Certifications:** Choose relevant certifications from the provided list.
-3. **Select the Workshops Attended:** Pick the workshops you have attended.
-4. **Choose Your Interested Subjects:** Select the subjects you are most passionate about.
-5. **Select Your Preferred Career Area:** Indicate the career areas that align with your long-term goals.
-6. **Choose the Preferred Type of Company:** Select the type of company you would like to work for.
-7. **Predict Career Path:** Click the "Predict Career Path" button to get your prediction and guidance.
+1. Enter your skills, certifications, and preferences.
+2. Click "Predict Career Path" to get personalized recommendations and guidance.
 
 ## Project Structure
 
 - `app.py`: Main application file containing the Streamlit app.
 - `helper.py`: Contains helper functions like `predict_career_path` and `provide_guidance`.
 - `requirements.txt`: Lists all Python packages required to run the project.
+
+## Preview
+
+Check out the live version of the app [here](https://career-predictor.streamlit.app/).
