@@ -30,6 +30,7 @@ st.markdown("""
         font-size: 16px;
         font-weight: bold;
         border-radius: 10px;
+        padding: 0.5rem 1rem;
     }
     .stButton>button:hover {
         background-color: #0056b3;
@@ -114,49 +115,57 @@ type_of_company = st.selectbox("Preferred Type of Company",
                                 'Testing and Maintenance Services', 'Web Services',
                                 'Product Development'])
 
+
 # Check if all required fields are filled
-required_fields_filled = (coding_skills_rating and self_learning_capability is not None and
-                          reading_and_writing_skills is not None and memory_capability_score is not None and
-                          certifications and workshops and interested_subjects and
-                          interested_career_area and type_of_company)
+def check_required_fields():
+    return (coding_skills_rating is not None and self_learning_capability is not None and
+            reading_and_writing_skills is not None and memory_capability_score is not None and
+            certifications and workshops and interested_subjects and
+            interested_career_area and type_of_company)
+
 
 # One-hot encode the multiselect and selectbox inputs
-certifications_vector = [1 if cert in certifications else 0 for cert in
-                         ['App Development', 'Distro Making', 'Full Stack', 'Hadoop', 'Information Security',
-                          'Machine Learning', 'Python', 'R Programming', 'Shell Programming']]
-workshops_vector = [1 if workshop in workshops else 0 for workshop in
-                    ['Cloud Computing', 'Data Science', 'Database Security', 'Game Development', 'Hacking',
-                     'System Designing', 'Testing', 'Web Technologies']]
-subjects_vector = [1 if subject in interested_subjects else 0 for subject in
-                   ['Computer Architecture', 'IOT', 'Management', 'Software Engineering', 'Cloud Computing',
-                    'Data Engineering', 'Hacking', 'Networks', 'Parallel Computing', 'Programming']]
-career_area_vector = [1 if area in interested_career_area else 0 for area in
-                      ['Business Process Analyst', 'Cloud Computing', 'Developer', 'Security', 'System Developer',
-                       'Testing']]
-company_vector = [1 if company == type_of_company else 0 for company in
-                  ['BPA', 'Cloud Services', 'Finance', 'Product Based', 'SAaS Services', 'Sales and Marketing',
-                   'Service Based', 'Testing and Maintenance Services', 'Web Services', 'Product Development']]
+def encode_inputs():
+    certifications_vector = [1 if cert in certifications else 0 for cert in
+                             ['App Development', 'Distro Making', 'Full Stack', 'Hadoop', 'Information Security',
+                              'Machine Learning', 'Python', 'R Programming', 'Shell Programming']]
+    workshops_vector = [1 if workshop in workshops else 0 for workshop in
+                        ['Cloud Computing', 'Data Science', 'Database Security', 'Game Development', 'Hacking',
+                         'System Designing', 'Testing', 'Web Technologies']]
+    subjects_vector = [1 if subject in interested_subjects else 0 for subject in
+                       ['Computer Architecture', 'IOT', 'Management', 'Software Engineering', 'Cloud Computing',
+                        'Data Engineering', 'Hacking', 'Networks', 'Parallel Computing', 'Programming']]
+    career_area_vector = [1 if area in interested_career_area else 0 for area in
+                          ['Business Process Analyst', 'Cloud Computing', 'Developer', 'Security', 'System Developer',
+                           'Testing']]
+    company_vector = [1 if company == type_of_company else 0 for company in
+                      ['BPA', 'Cloud Services', 'Finance', 'Product Based', 'SAaS Services', 'Sales and Marketing',
+                       'Service Based', 'Testing and Maintenance Services', 'Web Services', 'Product Development']]
 
-# Combine all features into a single array
-input_data = np.array([coding_skills_rating, self_learning_capability,
-                       reading_and_writing_skills, memory_capability_score] +
-                      certifications_vector + workshops_vector + subjects_vector +
-                      career_area_vector + company_vector).reshape(1, -1)
+    return np.array([coding_skills_rating, self_learning_capability,
+                     reading_and_writing_skills, memory_capability_score] +
+                    certifications_vector + workshops_vector + subjects_vector +
+                    career_area_vector + company_vector).reshape(1, -1)
 
-# Variables to hold prediction and guidance
-prediction = None
-guidance = None
+
+# Initialize session state for prediction and guidance
+if 'prediction' not in st.session_state:
+    st.session_state.prediction = None
+if 'guidance_shown' not in st.session_state:
+    st.session_state.guidance_shown = False
 
 # Predict the career path
 if st.button("🔍 Predict Career Path"):
-    if required_fields_filled:
-        prediction = predict_career_path(input_data)
-        st.success(f"**Predicted Career Path:** {prediction}")
+    if check_required_fields():
+        st.session_state.prediction = predict_career_path(encode_inputs())
+        st.session_state.guidance_shown = True
+        st.success(f"**Predicted Career Path:** {st.session_state.prediction}")
     else:
         st.error("Please fill in all required fields to proceed with prediction and guidance.")
 
 # Show the "Get Guidance" button only after a career path is predicted
-if prediction:
+if st.session_state.guidance_shown:
     if st.button("📝 Get Guidance"):
-        guidance = provide_guidance(prediction)
+        guidance = provide_guidance(st.session_state.prediction)
         st.info(f"**Guidance:** {guidance}")
+
