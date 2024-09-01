@@ -148,11 +148,15 @@ prediction = None
 guidance = None
 
 # Predict the career path
-if st.button("🔍 Predict Career Path") and required_fields_filled:
-    prediction = predict_career_path(input_data)
-    st.success(f"**Predicted Career Path:** {prediction}")
-    st.info(f"**Guidance:** {provide_guidance(prediction)}")
+if st.button("🔍 Predict Career Path"):
+    if required_fields_filled:
+        prediction = predict_career_path(input_data)
+        st.success(f"**Predicted Career Path:** {prediction}")
+    else:
+        st.error("Please fill in all required fields to proceed with prediction and guidance.")
 
-
-if not required_fields_filled:
-    st.error("Please fill in all required fields to proceed with prediction and guidance.")
+# Show the "Get Guidance" button only after a career path is predicted
+if prediction:
+    if st.button("📝 Get Guidance"):
+        guidance = provide_guidance(prediction)
+        st.info(f"**Guidance:** {guidance}")
