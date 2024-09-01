@@ -114,6 +114,12 @@ type_of_company = st.selectbox("Preferred Type of Company",
                                 'Testing and Maintenance Services', 'Web Services',
                                 'Product Development'])
 
+# Check if all required fields are filled
+required_fields_filled = (coding_skills_rating and self_learning_capability is not None and
+                          reading_and_writing_skills is not None and memory_capability_score is not None and
+                          certifications and workshops and interested_subjects and
+                          interested_career_area and type_of_company)
+
 # One-hot encode the multiselect and selectbox inputs
 certifications_vector = [1 if cert in certifications else 0 for cert in
                          ['App Development', 'Distro Making', 'Full Stack', 'Hadoop', 'Information Security',
@@ -137,8 +143,16 @@ input_data = np.array([coding_skills_rating, self_learning_capability,
                       certifications_vector + workshops_vector + subjects_vector +
                       career_area_vector + company_vector).reshape(1, -1)
 
+# Variables to hold prediction and guidance
+prediction = None
+guidance = None
+
 # Predict the career path
-if st.button("🔍 Predict Career Path"):
+if st.button("🔍 Predict Career Path") and required_fields_filled:
     prediction = predict_career_path(input_data)
     st.success(f"**Predicted Career Path:** {prediction}")
     st.info(f"**Guidance:** {provide_guidance(prediction)}")
+
+
+if not required_fields_filled:
+    st.error("Please fill in all required fields to proceed with prediction and guidance.")
